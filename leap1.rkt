@@ -1,0 +1,10 @@
+#lang racket
+(require racket/date)
+(define leap? (lambda (year)
+                (cond
+                  ((zero? (modulo year 400)) #t)
+                  ((zero? (modulo year 100)) #f)
+                  (else (zero? (modulo year 4)))
+                  )
+                )
+  )

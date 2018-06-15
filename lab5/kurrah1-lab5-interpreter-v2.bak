@@ -1,0 +1,75 @@
+#lang eopl
+;;; begin -- abstract syntax definition
+
+
+(define-datatype  program  program?
+   (a-program (exp expression?)))
+
+(define-datatype expression expression?
+   (lit-exp (datum number?))
+   (var-exp (id symbol?))
+   (primapp-exp
+     (prim  primitive?)
+     (rands  (list-of expression?))) )
+
+(define-datatype primitive primitive?
+   (add-prim)
+   (subtract-prim)
+   (mult-prim)
+   (incr-prim)
+   (decr-prim))
+;;; end -- abstract syntax definition
+
+; program example: 2
+(define program-test-1  
+  (a-program (lit-exp 2)))
+
+; program example: v
+(define program-test-2  
+  (a-program (var-exp 'v)))
+
+; program example: +(v,2)
+(define program-test-3
+  (a-program (primapp-exp (add-prim) 
+					(list (var-exp 'v) (lit-exp 2)))))
+; program example: add1 (+(v,3))
+(define program-test-4 
+	(a-program
+  		(primapp-exp
+		  	(incr-prim)
+		  	  	(list (primapp-exp 
+		  	  			(add-prim)  
+                                                (list (var-exp 'v)
+                                                      (lit-exp 3)))))))
+
+
+;interpreter
+
+(define eval-program ;the entry point of the interpreter  
+  (lambda (pgm)
+    (cases program pgm
+      (a-program (body)
+        (eval-expression body)))))
+
+(define eval-expression 
+  (lambda (exp)
+    (cases expression exp
+      (lit-exp (datum) datum)
+      (var-exp (var) '()) ; will be handled later- value of the identifier
+      (primapp-exp (prim rands) '()); will be handled later
+    )
+  )
+)
+
+(a-program
+ (primapp-exp
+  (add-prim)
+  (list (var-exp 'v) (lit-exp 2))))
+
+(define eval-program
+  (lambda (pgm)
+    (cases program pgm
+      (a-program (body)
+                 (eval-expression body (init-env))))))
+
+  

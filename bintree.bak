@@ -1,0 +1,12 @@
+#lang eopl
+(define-datatype
+  bintree bintree?
+  (leaf-node
+   (datum number?)
+   )
+  (interior-node
+   (symbol symbol?)
+   (left bintree?)
+   (right bintree?)
+   )
+  )

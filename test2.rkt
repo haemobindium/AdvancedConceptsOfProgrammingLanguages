@@ -1,0 +1,84 @@
+#lang racket
+(define atom?
+ (lambda (x)
+ (and (not (pair? x)) (not (null? x)))))
+
+(define list-of-atoms?
+ (lambda (lst)
+ (or (null? lst)
+ (and (atom? (car lst))
+(list-of-atoms? (cdr lst))))))
+
+((lambda (x)
+   (+ 7
+      ((lambda (a b)
+         (+ a b x)) 1 2))) 5)
+
+(let*
+((a 1))
+(let*
+((a (+ a 2))) a))
+
+(define n
+(lambda (n)
+(map
+(lambda (n)
+(* n 2))
+n)))
+
+(define x 10)
+(define y 11)
+(define proc2
+(lambda ()
+(cons x (cons y '()))))
+(define proc1
+(lambda (x y)
+(proc2)))
+(cond
+((zero? (read)) (proc1 5 20)) (else (proc2)))
+
+((lambda(x y)
+(let ((proc1 (lambda (x) (+ x 1)))
+(proc2 (lambda (y) (* y 2))))
+(proc2 (* y (proc1 x))))) 2 3)
+
+
+;;sort ascending
+(define sort
+  (lambda (s)
+    (cond
+      ((null? s) '())
+      ((eqv? (car s) (apply min s)) (cons (car s)
+                                          (sort (cdr s))))
+      (else (sort (append (cdr s)(list (car s))))))))
+
+;;flatten
+(define atom
+  (lambda (x)
+    (and (not (pair? x)) (not (null? x)))))
+
+(define flatten
+  (lambda (f)
+    (cond
+      ((null? f) '())
+      ((atom? (car f)) (cons (car f) (flatten (cdr f))))
+      (else (append (flatten (car f)) (flatten (cdr f)))))))
+
+
+
+;;sort descending
+(define sortdesc
+  (lambda (s)
+    (cond
+      ((null? s) '())
+      ((eqv? (car s) (apply max s)) (cons (car s) (sortdesc (cdr s))))
+      (else (sortdesc (append (cdr s) (list (car s))))))))
+
+;;letrec
+
+(letrec ((sum (lambda (lst)
+                (cond
+                  ((null? lst) 0)
+                  (else (+ (car lst)
+                           (sum (cdr lst))))))))
+(sum '(1 2 3)))

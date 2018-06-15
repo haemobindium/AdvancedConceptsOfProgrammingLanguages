@@ -1,0 +1,30 @@
+#lang eopl
+
+;;;;;;;;;;;;;;;; grammatical specification ;;;;;;;;;;;;;;;;
+
+(define the-lexical-spec
+  '((whitespace (whitespace) skip)
+    (comment ("%" (arbno (not #\newline))) skip)
+    (identifier
+      (letter (arbno (or letter digit "_" "-" "?")))
+      symbol)
+    (number (digit (arbno digit)) number)
+   )
+)
+
+(define the-grammar
+  '((program (expression) a-program)
+    (expression (number) lit-exp)
+    (expression (identifier) var-exp)   
+    (expression
+      (primitive "(" (separated-list expression ",") ")")
+      primapp-exp)
+    (primitive ("+")     add-prim)
+    (primitive ("-")     subtract-prim)
+    (primitive ("*")     mult-prim)
+    (primitive ("add1")  incr-prim)
+    (primitive ("sub1")  decr-prim)
+   )
+)
+
+(provide (all-defined-out))
